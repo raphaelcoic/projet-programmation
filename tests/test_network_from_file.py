@@ -1,4 +1,3 @@
-# This will work if ran from the root folder (the folder in which there is the subfolder code/)
 import sys 
 from pathlib import Path
 ROOT = Path(__file__).parent.parent
