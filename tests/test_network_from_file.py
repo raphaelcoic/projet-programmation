@@ -1,13 +1,17 @@
 # This will work if ran from the root folder (the folder in which there is the subfolder code/)
 import sys 
-sys.path.append("code/")
+from pathlib import Path
+ROOT = Path(__file__).parent.parent
+sys.path.append(str(ROOT / "code"))
+
+NET_DIR = ROOT / "examples"
 
 import unittest 
 from network import Network
 
 class Test_NetworkLoading(unittest.TestCase):
     def test_network_small(self):
-        network = Network.from_file("examples/small.txt")
+        network = Network.from_file(NET_DIR / "small.txt")
         self.assertEqual(network.start, "lozere")
         self.assertEqual(network.end, "saclay")
         self.assertEqual(network._roads, {'lozere': [('ensae', 10, 2), ('guichet', 20, 0)], 

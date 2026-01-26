@@ -1,13 +1,17 @@
 # This will work if ran from the root folder (the folder in which there is the subfolder code/)
 import sys 
-sys.path.append("code/")
+from pathlib import Path
+ROOT = Path(__file__).parent.parent
+sys.path.append(str(ROOT / "code"))
+
+NET_DIR = ROOT / "examples"
 
 import pytest
 from network import Network
 
 def test_network_small():
     # Setup
-    network = Network.from_file("examples/small.txt")
+    network = Network.from_file(NET_DIR / "small.txt")
     
     # Assertions
     assert network.start == "lozere"
