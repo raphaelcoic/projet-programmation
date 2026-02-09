@@ -1,4 +1,10 @@
 from graph import *
+import sys
+from pathlib import Path
+ROOT = Path(__file__).parent.parent
+sys.path.append(str(ROOT / "code"))
+NET_DIR = ROOT / "examples"
+
 
 class Network:
     """
@@ -51,11 +57,24 @@ class Network:
 
         return cls(roads=roads, start=start, end=end)
 
-    def build_simple_graph(self):
+    def build_simple_graph(self): ### self est déja un network
         """
         Builds an object of type Graph from the network, by ignoring the fatigue coefficient. 
         """
         # TODO: implement the method
-        raise NotImplementedError
+
+        edges = {}
+        for edge, neighbors in self._roads.items():
+            edges[edge] = [(dest, length) for dest, length, fatigue in neighbors]
+
+        return Graph(edges)
 
 
+### TEST
+network = Network.from_file(NET_DIR / "small.txt")
+print(network._roads)
+### On créé un network à partir du texte puis un graph à partir du network grâce à la classe graph
+graph = Graph(network)
+print(graph._edges)
+G = network.build_simple_graph()
+print(G._edges)
