@@ -46,7 +46,9 @@ class Graph:
             distance: shortest distance from start to end
             path: list of nodes forming the shortest path
         """
-        if start not in self._edges or end not in self._edges:
+        if (start not in self._edges
+                or end not in {dest for neighbors in self._edges.values()
+                                 for dest, _ in neighbors}):
             return math.inf, []
 
         # Initialize distances and predecessors
@@ -56,8 +58,11 @@ class Graph:
         visited = []
 
         while len(visited) < len(self._edges):
-            current = min((node for node in self.edges if node not in visited), key=lambda x: distances[x],
+            current = min((node for node in self._edges if node not in visited), key=lambda x: distances[x],
                           default=None)
+
+            if distances[current] == math.inf:
+                return math.inf, []
 
             if current == end:
                 break
@@ -65,12 +70,12 @@ class Graph:
             visited.append(current)
 
             # Update distances to neighbors
-            for neighbor, weight in self.neighbours(current):
-                if neighbor not in visited:
-                    distance = distances[current] + weight
-                    if distance < distances[neighbor]:
-                        distances[neighbor] = distance
-                        predecessors[neighbor] = current
+            for dest, length in self.neighbours(current):
+                if dest not in visited:
+                    distance = distances[current] + length
+                    if distance < distances[dest]:
+                        distances[dest] = distance
+                        predecessors[dest] = current
 
         # Reconstruct path
         path = []

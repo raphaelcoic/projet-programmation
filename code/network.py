@@ -67,12 +67,35 @@ class Network:
 
         return Graph(edges)
 
-
-### TEST
-network = Network.from_file(NET_DIR / "small.txt")
-print(network._roads)
-### On créé un network à partir du texte puis un graph à partir du network grâce à la classe graph
-graph = Graph(network)
-print(graph._edges)
-G = network.build_simple_graph()
-print(G._edges)
+    def build_extended_graph(self, max_fatigue=1000):
+        """
+        Builds an extended graph from the network by considering fatigue levels.
+        Expands each node (except start and end) into nodes with different fatigue levels.
+        
+        Parameters:
+        -----------
+        max_fatigue: int
+            Maximum allowed fatigue level (default: 1000)
+            
+        Returns:
+        --------
+        Graph
+            Extended graph where nodes are (original_node, fatigue_level) pairs
+        """
+        extended_roads = {self.start: [((dest, 1), length) for dest, length, fatigue in self._roads[self.start]]}
+        for fatigue_level in range(1, max_fatigue):
+            for node, neighbors in self._roads.items():
+                if node == self.end:
+                    extended_roads[node] = [((dest, fatigue_level + fatigue), length * fatigue_level)
+                                                             if dest != self.end
+                                                             else (dest, length * fatigue_level)
+                                                             for dest, length, fatigue in neighbors
+                                                             if fatigue_level + fatigue <= max_fatigue]
+                else:
+                    extended_roads[(node, fatigue_level)] = [((dest, fatigue_level + fatigue), length * fatigue_level)
+                                                             if dest != self.end
+                                                             else (dest, length * fatigue_level)
+                                                             for dest, length, fatigue in neighbors
+                                                             if fatigue_level + fatigue <= max_fatigue]
+        print('Extended graph created.')
+        return Graph(extended_roads)
