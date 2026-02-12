@@ -61,8 +61,6 @@ class Network:
         """
         Builds an object of type Graph from the network, by ignoring the fatigue coefficient. 
         """
-        # TODO: implement the method
-
         edges = {}
         for edge, neighbors in self._roads.items():
             edges[edge] = [(dest, length) for dest, length, fatigue in neighbors]

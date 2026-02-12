@@ -5,5 +5,4 @@ from graph import Graph
 network_file = "../examples/small.txt"
 network = Network.from_file(network_file)
 
-print (1)
 

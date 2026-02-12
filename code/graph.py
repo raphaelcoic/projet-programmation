@@ -1,7 +1,7 @@
 """
 This is the graph module. It contains the classes Graph and GraphImplicit
 """
-
+import math
 
 class Graph:
     """
@@ -29,4 +29,55 @@ class Graph:
             return []
         return self._edges[node]
 
+    def shortest_path(self, start, end):
+        """
+        Finds the shortest path between start and end nodes using Dijkstra's algorithm.
 
+        Parameters:
+        -----------
+        start: node
+            Starting node
+        end: node
+            Target node
+
+        Returns:
+        --------
+        tuple (distance, path)
+            distance: shortest distance from start to end
+            path: list of nodes forming the shortest path
+        """
+        if start not in self._edges or end not in self._edges:
+            return math.inf, []
+
+        # Initialize distances and predecessors
+        distances = {node: math.inf for node in self._edges}
+        distances[start] = 0
+        predecessors = {node: None for node in self._edges}
+        visited = []
+
+        while len(visited) < len(self._edges):
+            current = min((node for node in self.edges if node not in visited), key=lambda x: distances[x],
+                          default=None)
+
+            if current == end:
+                break
+
+            visited.append(current)
+
+            # Update distances to neighbors
+            for neighbor, weight in self.neighbours(current):
+                if neighbor not in visited:
+                    distance = distances[current] + weight
+                    if distance < distances[neighbor]:
+                        distances[neighbor] = distance
+                        predecessors[neighbor] = current
+
+        # Reconstruct path
+        path = []
+        current = end
+        while current is not None:
+            path.append(current)
+            current = predecessors[current]
+        path.reverse()
+
+        return distances[end], path
