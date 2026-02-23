@@ -3,6 +3,9 @@ This is the graph module. It contains the classes Graph and GraphImplicit
 """
 import math
 
+from networkx.algorithms.shortest_paths.generic import shortest_path
+
+
 class Graph:
     """
     A minimal class for directed weighted graph represented as adjacency list. 
@@ -52,13 +55,13 @@ class Graph:
             return math.inf, []
 
         # Initialize distances and predecessors
-        distances = {node: math.inf for node in self._edges}
+        distances = {}
         distances[start] = 0
-        predecessors = {node: None for node in self._edges}
-        visited = []
+        predecessors = {}
+        visited = {}
 
-        while len(visited) < len(self._edges):
-            current = min((node for node in self._edges if node not in visited), key=lambda x: distances[x],
+        while True:
+            current = min((node for node in distances.keys() if not visited[node]), key=lambda x: distances[x],
                           default=None)
 
             if distances[current] == math.inf:
@@ -67,13 +70,14 @@ class Graph:
             if current == end:
                 break
 
-            visited.append(current)
+            visited[current] = True
 
             # Update distances to neighbors
             for dest, length in self.neighbours(current):
+                if dest == end : print(dest)
                 if dest not in visited:
                     distance = distances[current] + length
-                    if distance < distances[dest]:
+                    if distance < distances.get(dest, math.inf):
                         distances[dest] = distance
                         predecessors[dest] = current
 
@@ -82,7 +86,14 @@ class Graph:
         current = end
         while current is not None:
             path.append(current)
-            current = predecessors[current]
+            current = predecessors.get(current, None)
         path.reverse()
 
         return distances[end], path
+
+class GraphImplicit(Graph):
+    def __init__(self, edges, fonction_neighbours):
+        super().__init__(edges)
+        self.neighbours = fonction_neighbours
+
+

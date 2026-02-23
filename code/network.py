@@ -93,3 +93,32 @@ class Network:
                                                              if fatigue_level + fatigue <= max_fatigue]
         print('Extended graph created.')
         return Graph(extended_roads)
+
+    def build_implicit_graph(self):
+
+        edges = {}
+        for edge, neighbors in self._roads.items():
+            edges[edge] = [(dest, length) for dest, length, fatigue in neighbors]
+
+        def fonction_neighbours(node):
+            if node == self.start:
+                neighbours = []
+                for dest, length, fatigue in self._roads[node]:
+                    if dest != self.end:
+                        neighbours.append(((dest, fatigue), length))
+                    else:
+                        neighbours.append((dest, length))
+
+
+            else:
+                v, current_fatigue = node
+                neighbours = []
+                for dest, length, fatigue in self._roads[v]:
+                    if dest != self.end:
+                        neighbours.append(((dest,current_fatigue + fatigue), length * current_fatigue))
+                    else:
+                        neighbours.append((dest, length * current_fatigue))
+
+            return neighbours
+
+        return GraphImplicit(edges, fonction_neighbours)
