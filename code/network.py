@@ -92,13 +92,15 @@ class Network:
             else:
                 start_edges.append((dest, length))
         extended_roads = {self.start: start_edges, self.end: []}
+
         for fatigue_level in range(1, max_fatigue):
             for node, neighbors in self._roads.items():
-                extended_roads[(node, fatigue_level)] = [((dest, fatigue_level + fatigue), length * fatigue_level)
-                                                             if dest != self.end
-                                                             else (dest, length * fatigue_level)
-                                                             for dest, length, fatigue in neighbors
-                                                             if fatigue_level + fatigue <= max_fatigue]
+                if node != self.start:
+                    extended_roads[(node, fatigue_level)] = [((dest, fatigue_level + fatigue), length * fatigue_level)
+                                                                 if dest != self.end
+                                                                 else (dest, length * fatigue_level)
+                                                                 for dest, length, fatigue in neighbors
+                                                                 if fatigue_level + fatigue <= max_fatigue]
         print('Extended graph created.')
         return Graph(extended_roads)
 
@@ -113,7 +115,7 @@ class Network:
                 neighbours = []
                 for dest, length, fatigue in self._roads[node]:
                     if dest != self.end:
-                        neighbours.append(((dest, fatigue), length))
+                        neighbours.append(((dest, 1 + fatigue), length))
                     else:
                         neighbours.append((dest, length))
 

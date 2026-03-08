@@ -23,13 +23,29 @@ def load_expected_distances():
     return expected
 
 
-class Test_ShortestPathImplicit(unittest.TestCase):
-    def test_shortest_path_implicit_small(self):
-        expected = load_expected_distances()
-        network = Network.from_file(NET_DIR / "medium-smallfatigue.txt") ### Ici on teste avec un fichier à la fois pour que cela prenne moins de temps
+
+
+class Test_ShortestPath_Implicit(unittest.TestCase):
+    def assert_shortest_path_distance(self, filename, expected_distance):
+        network = Network.from_file(NET_DIR / filename)
         graph = network.build_implicit_graph()
         actual, _ = graph.shortest_path(network.start, network.end)
-        self.assertEqual(actual, expected["medium-smallfatigue.txt"])
+        self.assertEqual(actual, expected_distance)
+
+    def test_shortest_path_expected_distances(self):
+        expected_file = ROOT / "tests" / "data" / "expected_distances.txt"
+        with expected_file.open("r") as handle:
+            for line in handle:
+                line = line.strip()
+                if not line:
+                    continue
+                filename, distance = line.split()
+
+                if filename != "medium-largefatigue.txt":  ### Ici on teste avec un fichier à la fois pour que cela prenne moins de temps
+                    continue  ### On peut enlever ces deux lignes pour tester tout le fichiers en même temps
+                print(f"Testing graph: {filename}")  # Print the graph name being tested
+                self.assert_shortest_path_distance(filename, int(distance))
+
 
 
 if __name__ == "__main__":
