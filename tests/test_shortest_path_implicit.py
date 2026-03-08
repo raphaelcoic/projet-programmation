@@ -26,10 +26,10 @@ def load_expected_distances():
 class Test_ShortestPathImplicit(unittest.TestCase):
     def test_shortest_path_implicit_small(self):
         expected = load_expected_distances()
-        network = Network.from_file(NET_DIR / "large-smallfatigue.txt") ### Ici on teste avec un fichier à la fois pour que cela prenne moins de temps
+        network = Network.from_file(NET_DIR / "medium-smallfatigue.txt") ### Ici on teste avec un fichier à la fois pour que cela prenne moins de temps
         graph = network.build_implicit_graph()
         actual, _ = graph.shortest_path(network.start, network.end)
-        self.assertEqual(actual, expected["large-smallfatigue.txt"])
+        self.assertEqual(actual, expected["medium-smallfatigue.txt"])
 
 
 if __name__ == "__main__":
