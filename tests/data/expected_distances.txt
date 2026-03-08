@@ -1,0 +1,7 @@
+small.txt 125
+medium-nofatigue.txt 1771
+medium-smallfatigue.txt 29934
+medium-largefatigue.txt 3462368
+large-nofatigue.txt 15137
+large-smallfatigue.txt 2000993
+large-largefatigue.txt 288955255

@@ -9,32 +9,32 @@ from networkx.algorithms.shortest_paths.generic import \
 
 class Graph:
     """
-    A minimal class for directed weighted graph represented as an adjacency list. 
+    A minimal class for directed weighted graph represented as an adjacency list.
 
     Attributes: 
     -----------
     edges: dict
         A dictionary that contains the list of neighbors of each node along with their corresponding weights.
-        Example: edges = {v0: [(v1, 21), (v2, 12)], 
-                          v1: [(v0, 74), (v2, 32)], 
+        Example: edges = {v0: [(v1, 21), (v2, 12)],
+                          v1: [(v0, 74), (v2, 32)],
                           ...}
 
     Methods: 
     --------
     neighbours(self, node): 
         Returns the list of all neighbors of a particular node.
-    shortest_path(self, start, end): 
+    shortest_path(self, start, end):
         Computes the shortest path between two nodes using Dijkstra's algorithm.
     """
 
     def __init__(self, edges):
         """
         Initializes the Graph with an adjacency list stored in 'edges'.
-        
+
         Parameters:
         -----------
         edges: dict
-            Dictionary where keys represent nodes and values are lists of tuples, 
+            Dictionary where keys represent nodes and values are lists of tuples,
             each containing a neighboring node and the weight of the edge to it.
         """
         self._edges = edges
@@ -45,7 +45,7 @@ class Graph:
 
         Parameters:
         -----------
-        node: 
+        node:
             The node whose neighbors need to be fetched.
 
         Returns:
@@ -61,7 +61,7 @@ class Graph:
     def shortest_path(self, start, end):
         """
         Finds the shortest path between start and end nodes using Dijkstra's algorithm.
-        
+
         Dijkstra's algorithm is implemented using a greedy approach:
         1. Initialize distances of all nodes from the start node as infinite (`math.inf`), except the start node itself (distance 0).
         2. Compute the shortest distances iteratively by visiting the unvisited node with the smallest distance.
@@ -148,18 +148,7 @@ class GraphImplicit(Graph):
     """
 
     def __init__(self, edges, fonction_neighbours):
-        """
-        Initializes the implicit graph with both an adjacency list and a neighbor function.
-
-        Parameters:
-        -----------
-        edges: dict
-            Standard adjacency list for explicitly defined parts of the graph.
-        fonction_neighbours: function
-            A function that dynamically computes the neighbors of a node. This allows for
-            representing large or infinite graphs without explicitly enumerating all edges.
-        """
-        # Call the parent Graph constructor to initialize the adjacency list.
         super().__init__(edges)
-        # Override the `neighbours` method with the provided custom function.
         self.neighbours = fonction_neighbours
+
+

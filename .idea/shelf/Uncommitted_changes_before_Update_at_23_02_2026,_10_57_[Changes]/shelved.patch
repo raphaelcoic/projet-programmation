@@ -1,0 +1,53 @@
+Index: code/graph.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>\"\"\"\nThis is the graph module. It contains the classes Graph and GraphImplicit\n\"\"\"\nimport math\n\nclass Graph:\n    \"\"\"\n    A minimal class for directed weighted graph represented as adjacency list. \n    \n    Attributes: \n    -----------\n    edges: dict\n        A dictionary that contains the list of neighbors of each node with its weight.\n        Ex: edges = {v0: [(v1, 21), (v2, 12)], \n                     v1: [(v0, 74), (v2, 32)], \n                     ...}\n\n    Methods: \n    --------\n    neighbours(self, node): \n        Returns the list of all neighbors of a node\n    \"\"\"\n\n    def __init__(self, edges):\n        self._edges = edges\n\n    def neighbours(self, node):\n        if node not in self._edges:\n            return []\n        return self._edges[node]\n\n    def shortest_path(self, start, end):\n        \"\"\"\n        Finds the shortest path between start and end nodes using Dijkstra's algorithm.\n\n        Parameters:\n        -----------\n        start: node\n            Starting node\n        end: node\n            Target node\n\n        Returns:\n        --------\n        tuple (distance, path)\n            distance: shortest distance from start to end\n            path: list of nodes forming the shortest path\n        \"\"\"\n        if (start not in self._edges\n                or end not in {dest for neighbors in self._edges.values()\n                                 for dest, _ in neighbors}):\n            return math.inf, []\n\n        # Initialize distances and predecessors\n        distances = {node: math.inf for node in self._edges}\n        distances[start] = 0\n        predecessors = {node: None for node in self._edges}\n        visited = []\n\n        while len(visited) < len(self._edges):\n            current = min((node for node in self._edges if node not in visited), key=lambda x: distances[x],\n                          default=None)\n\n            if distances[current] == math.inf:\n                return math.inf, []\n\n            if current == end:\n                break\n\n            visited.append(current)\n\n            # Update distances to neighbors\n            for dest, length in self.neighbours(current):\n                if dest not in visited:\n                    distance = distances[current] + length\n                    if distance < distances[dest]:\n                        distances[dest] = distance\n                        predecessors[dest] = current\n\n        # Reconstruct path\n        path = []\n        current = end\n        while current is not None:\n            path.append(current)\n            current = predecessors[current]\n        path.reverse()\n\n        return distances[end], path\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/code/graph.py b/code/graph.py
+--- a/code/graph.py	(revision 2f3302136c90cb7184fe5988e1787d6ea7c0e038)
++++ b/code/graph.py	(date 1771228400299)
+@@ -28,8 +28,10 @@
+         if node not in self._edges:
+             return []
+         return self._edges[node]
++### Ici edges est un dictionnaire, et la fonction neighbours renvoie la liste des voisins du node, qui est
++### une clé du dictionnaire edges
+ 
+-    def shortest_path(self, start, end):
++    def shortest_path(self, start, end): ### ici start et end sont des noeuds
+         """
+         Finds the shortest path between start and end nodes using Dijkstra's algorithm.
+ 
+Index: code/network.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>from graph import *\nimport sys\nfrom pathlib import Path\nROOT = Path(__file__).parent.parent\nsys.path.append(str(ROOT / \"code\"))\nNET_DIR = ROOT / \"examples\"\n\n\nclass Network:\n    \"\"\"\n    Class for a network that represents the environment (with length and fatigue on roads). \n    \"\"\"\n\n    def __init__(self, roads={}, start=None, end=None):\n        \"\"\"\n        Initializes the network from a dictionary roads. \n\n        Parameters: \n        -----------\n        roads: dict\n            A dictionary of the roads as an adjacency list, that is \n            roads[u] = list of (v, length, fatigue)\n            Ex: roads = {v0: [(v1, 21, 2), (v2, 12, 4)], \n                        v1: [(v0, 74, 2), (v2, 32, 1)], \n                        ...}\n        start, end: \n            Start and end nodes added as attributes\n        \"\"\"\n        self._roads = roads\n        self.start = start\n        self.end = end\n\n    def __str__(self): \n        \"\"\"\n        Prints the network as text.\n        \"\"\"\n        output = f\"A network with {len(self._roads)} nodes and the following adjacency list:\\n\"\n        return output+self._roads.__str__()\n\n    @classmethod\n    def from_file(cls, filename: str):\n        \"\"\"\n        Creates a Network from an environment file.\n\n        File format: one edge per line (start end length fatigue).\n        \"\"\"\n        # Initialize adjacency list\n        roads = {}\n\n        with open(filename, \"r\") as testcase:\n            nb, start, end = testcase.readline().strip().split()\n            for _ in range(int(nb)):\n                i, j, l, f = testcase.readline().strip().split()\n                l, f = int(l), int(f)\n                roads.setdefault(i, []).append((j, l, f))\n                roads.setdefault(j, [])\n\n        return cls(roads=roads, start=start, end=end)\n\n    def build_simple_graph(self): ### self est déja un network\n        \"\"\"\n        Builds an object of type Graph from the network, by ignoring the fatigue coefficient. \n        \"\"\"\n        edges = {}\n        for edge, neighbors in self._roads.items():\n            edges[edge] = [(dest, length) for dest, length, fatigue in neighbors]\n\n        return Graph(edges)\n\n    def build_extended_graph(self, max_fatigue=1000):\n        \"\"\"\n        Builds an extended graph from the network by considering fatigue levels.\n        Expands each node (except start and end) into nodes with different fatigue levels.\n        \n        Parameters:\n        -----------\n        max_fatigue: int\n            Maximum allowed fatigue level (default: 1000)\n            \n        Returns:\n        --------\n        Graph\n            Extended graph where nodes are (original_node, fatigue_level) pairs\n        \"\"\"\n        extended_roads = {self.start: [((dest, 1), length) for dest, length, fatigue in self._roads[self.start]], self.end: []}\n        for fatigue_level in range(1, max_fatigue):\n            for node, neighbors in self._roads.items():\n                if node != self.end:\n                    extended_roads[(node, fatigue_level)] = [((dest, fatigue_level + fatigue), length * fatigue_level)\n                                                             if dest != self.end\n                                                             else (dest, length * fatigue_level)\n                                                             for dest, length, fatigue in neighbors\n                                                             if fatigue_level + fatigue <= max_fatigue]\n        print('Extended graph created.')\n        return Graph(extended_roads)\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/code/network.py b/code/network.py
+--- a/code/network.py	(revision 2f3302136c90cb7184fe5988e1787d6ea7c0e038)
++++ b/code/network.py	(date 1771229649815)
+@@ -82,14 +82,17 @@
+         Graph
+             Extended graph where nodes are (original_node, fatigue_level) pairs
+         """
+-        extended_roads = {self.start: [((dest, 1), length) for dest, length, fatigue in self._roads[self.start]], self.end: []}
++        extended_roads = {self.start: [((dest, 1), length) for dest, length, fatigue in self._roads[self.start]], self.end:[]}
+         for fatigue_level in range(1, max_fatigue):
+             for node, neighbors in self._roads.items():
+-                if node != self.end:
+-                    extended_roads[(node, fatigue_level)] = [((dest, fatigue_level + fatigue), length * fatigue_level)
++                extended_roads[(node, fatigue_level)] = [((dest, fatigue_level + fatigue), length * fatigue_level)
+                                                              if dest != self.end
+                                                              else (dest, length * fatigue_level)
+                                                              for dest, length, fatigue in neighbors
+                                                              if fatigue_level + fatigue <= max_fatigue]
+         print('Extended graph created.')
+         return Graph(extended_roads)
++
++
++### chemin trop long par rapport à un chemin connu
++### chemin arithmétiquement impossible (exe: fatigue décroissante)
