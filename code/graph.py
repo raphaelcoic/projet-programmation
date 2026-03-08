@@ -3,8 +3,6 @@ This is the graph module. It contains the classes Graph and GraphImplicit
 """
 import math
 
-from networkx.algorithms.shortest_paths.generic import shortest_path
-
 
 class Graph:
     """
@@ -31,8 +29,10 @@ class Graph:
         if node not in self._edges:
             return []
         return self._edges[node]
+### Ici edges est un dictionnaire, et la fonction neighbours renvoie la liste des voisins du node, qui est
+### une clé du dictionnaire edges
 
-    def shortest_path(self, start, end):
+    def shortest_path(self, start, end): ### ici start et end sont des noeuds
         """
         Finds the shortest path between start and end nodes using Dijkstra's algorithm.
 
@@ -55,31 +55,35 @@ class Graph:
             return math.inf, []
 
         # Initialize distances and predecessors
-        distances = {}
+        nodes = set(self._edges.keys())
+        distances = {node: math.inf for node in nodes}
         distances[start] = 0
-        predecessors = {}
-        visited = {}
+        predecessors = {node: None for node in nodes}
+        visited = set()
 
         while True:
-            current = min((node for node in distances.keys() if not visited[node]), key=lambda x: distances[x],
-                          default=None)
+            current = min(
+                (node for node in distances if node not in visited),
+                key=lambda x: distances[x],
+                default=None,
+            )
 
-            if distances[current] == math.inf:
+            if current is None or distances[current] == math.inf:
                 return math.inf, []
 
             if current == end:
                 break
 
-            visited[current] = True
+            visited.add(current)
 
             # Update distances to neighbors
             for dest, length in self.neighbours(current):
-                if dest == end : print(dest)
-                if dest not in visited:
-                    distance = distances[current] + length
-                    if distance < distances.get(dest, math.inf):
-                        distances[dest] = distance
-                        predecessors[dest] = current
+                if dest in visited:
+                    continue
+                distance = distances[current] + length
+                if distance < distances.get(dest, math.inf):
+                    distances[dest] = distance
+                    predecessors[dest] = current
 
         # Reconstruct path
         path = []
