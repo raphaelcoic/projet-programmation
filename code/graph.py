@@ -2,6 +2,7 @@
 This is the graph module. It contains the classes Graph and GraphImplicit.
 """
 import math
+import graphviz
 
 from networkx.algorithms.shortest_paths.generic import \
     shortest_path  # Importing NetworkX's shortest path algorithm, though it's not used here.
@@ -38,6 +39,7 @@ class Graph:
             each containing a neighboring node and the weight of the edge to it.
         """
         self._edges = edges
+        self.distances = {}
 
     def neighbours(self, node):
         """
@@ -57,6 +59,7 @@ class Graph:
         if node not in self._edges:
             return []
         return self._edges[node]
+
 
     def shortest_path(self, start, end):
         """
@@ -88,17 +91,17 @@ class Graph:
             return math.inf, []
 
         # Initialize distances, predecessors, and visited status for all nodes.
-        distances = {start: 0}  # Distance to the starting node is 0.
+        self.distances[(start, 1)] = 0  # Distance to the starting node is 0.
         predecessors = {}  # Tracks the previous node in the shortest path.
         visited = {}  # Tracks whether a node has been visited.
 
         while True:
             # Find the unvisited node with the smallest distance.
-            current = min((node for node in distances.keys() if not visited.get(node, False)),
-                          key=lambda x: distances[x], default=None)
+            current = min((node for node in self.distances.keys() if not visited.get(node, False)),
+                          key=lambda x: self.distances[x], default=None)
 
             # If no node can be reached or the smallest distance is infinity, terminate (no path exists).
-            if current is None or distances[current] == math.inf:
+            if current is None or self.distances[current] == math.inf:
                 return math.inf, []
 
             # If the current node is the destination, terminate.
@@ -107,24 +110,98 @@ class Graph:
 
             visited[current] = True  # Mark the current node as visited.
 
-            # Update distances and predecessors for each neighbor of the current node.
-            for dest, length in self.neighbours(current):
-                if not visited.get(dest, False):  # Only consider unvisited nodes.
-                    distance = distances[current] + length
-                    # Check if this path offers a shorter distance.
-                    if distance < distances.get(dest, math.inf):
-                        distances[dest] = distance
-                        predecessors[dest] = current
+            if not self._is_pareto_dominated(current):
+                # Update distances and predecessors for each neighbor of the current node.
+                for dest, length in self.neighbours(current):
+                    if not visited.get(dest, False):  # Only consider unvisited nodes.
+                        distance = self.distances[current] + length
+                        # Check if this path offers a shorter distance.
+                        if distance < self.distances.get(dest, math.inf):
+                            self.distances[dest] = distance
+                            predecessors[dest] = current
 
         # Reconstruct the shortest path from end to start using the predecessors dictionary.
         path = []
         current = end
         while current is not None:
-            path.append(current)
+            if type(current) is tuple:
+                path.append(current[0])
+            else:
+                path.append(current)
             current = predecessors.get(current, None)
         path.reverse()  # Reverse the path to get it from start to end.
 
-        return distances[end], path
+        return self.distances[end], path
+
+
+    def _is_pareto_dominated(self, node):
+        v, fatigue = node
+        distance = self.distances[(v, fatigue)]
+        for (s, f), d in self.distances.items():
+            if s == v and ((d > distance and f >= fatigue) or (d >= distance and f > fatigue)):
+                return True
+        return False
+
+
+
+
+    def render_graph_with_path(self, start, end, output_file="graph"):
+        """
+        Graphviz parfait : layout pro, chemin highlighté, HD.
+        """
+        distance, path = self.shortest_path(start, end)
+
+        if not path:
+            print("❌ Pas de chemin trouvé")
+            return
+
+        dot = graphviz.Digraph()
+        dot.attr(engine='dot', rankdir='TB', size='18,14', dpi='300')  # HD vertical
+        dot.attr('node', fontname='Arial', fontsize='11')
+        dot.attr('edge', fontname='Arial', fontsize='9')
+
+        # Tous les nœuds (graphe + chemin)
+        all_nodes = set(self._edges.keys())
+        for neighbors in self._edges.values():
+            for dest, _ in neighbors:
+                all_nodes.add(dest)
+        all_nodes.update(path)  # Sécurité
+
+        # Nœuds avec couleurs
+        for node in all_nodes:
+            node_id = str(node)
+            if node == start:
+                dot.node(node_id, fillcolor='lightgreen', style='filled,bold',
+                         shape='doublecircle', fontsize='13')
+            elif node == end:
+                dot.node(node_id, fillcolor='orange', style='filled,bold',
+                         shape='doublecircle', fontsize='13')
+            elif node in path:
+                dot.node(node_id, fillcolor='#E6F3FF', style='filled', shape='ellipse')
+            else:
+                dot.node(node_id, shape='circle', style='filled', fillcolor='lightgray')
+
+        # Arêtes du chemin (SANS IndexError)
+        path_edges = set(zip(path[:-1], path[1:]))  # Couples consécutifs
+
+        for src, neighbors in self._edges.items():
+            src_id = str(src)
+            for dest, weight in neighbors:
+                dest_id = str(dest)
+                if (src, dest) in path_edges:
+                    dot.edge(src_id, dest_id, label=f'{weight}', color='red',
+                             penwidth='5', arrowsize='2.0')
+                else:
+                    dot.edge(src_id, dest_id, label=f'{weight}', color='#666',
+                             penwidth='1.8')
+
+        # Titre pro
+        dot.attr(label=f'Plus court chemin {start} → {end}\n'
+                       f'{len(path) - 1} arêtes | Distance: {distance}')
+        dot.attr(labelfontname='Arial', labelfontsize='16', labelloc='t')
+        dot.attr(engine='fdp')
+        dot.render(output_file, format='svg', cleanup=True)
+        print(f"🎨 {output_file}.png généré (layout pro !)")
 
 
 class GraphImplicit(Graph):

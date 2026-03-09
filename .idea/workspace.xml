@@ -4,11 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="62d3a3e4-cfb7-4dd1-b905-0107ebbebc3d" name="Changes" comment="TESTUNITAIRES">
+    <list default="true" id="62d3a3e4-cfb7-4dd1-b905-0107ebbebc3d" name="Changes" comment="Merge + ajustement correction de bug du test unitaire de implicit graph">
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_23_02_2026,_10_57_[Changes]/shelved.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_23_02_2026__10_57__Changes_.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/network.py" beforeDir="false" afterPath="$PROJECT_DIR$/code/network.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_shortest_path_extended.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_shortest_path_extended.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_shortest_path_implicit.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_shortest_path_implicit.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/graph.py" beforeDir="false" afterPath="$PROJECT_DIR$/code/graph.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/code/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -27,12 +28,12 @@
     &quot;assignee&quot;: &quot;poignantlucas&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/raphaelcoic/projet-programmation.git&quot;,
-    &quot;accountId&quot;: &quot;5d10f5e1-659f-4f86-aab2-f6ea13b57180&quot;
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/raphaelcoic/projet-programmation.git",
+    "accountId": "e96d76d4-0281-48ed-9600-35d39b00113a"
   }
-}</component>
+}]]></component>
   <component name="McpProjectServerCommands">
     <McpServerCommand sourceId="UserConfigurationSource">
       <option name="allowedToolsNames" />
@@ -74,6 +75,7 @@
     &quot;Python tests.Python tests in test_shortest_path_extended.py.executor&quot;: &quot;Run&quot;,
     &quot;Python tests.Python tests in test_shortest_path_implicit.py.executor&quot;: &quot;Run&quot;,
     &quot;Python.graph.executor&quot;: &quot;Run&quot;,
+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
     &quot;Python.network.executor&quot;: &quot;Run&quot;,
     &quot;Python.test_network_from_file_pytest.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
@@ -95,7 +97,7 @@
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
-  <component name="RunManager" selected="Python tests.Python tests in test_shortest_path_implicit.py">
+  <component name="RunManager">
     <configuration name="test_network_from_file_pytest" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="projet-programmation" />
       <option name="ENV_FILES" value="" />
@@ -169,18 +171,18 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.test_network_from_file_pytest" />
         <item itemvalue="Python tests.Python tests in test_shortest_path_implicit.py" />
         <item itemvalue="Python tests.Python tests in test_shortest_path_extended.py" />
         <item itemvalue="Python tests.Python tests in test_network_from_file.py" />
-        <item itemvalue="Python.test_network_from_file_pytest" />
       </list>
     </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-PY-253.30387.127" />
-        <option value="bundled-python-sdk-3944b0c99280-6d6dccd035ac-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-253.30387.127" />
+        <option value="bundled-js-predefined-d6986cc7102b-a71380e98a7c-JavaScript-PY-252.28539.27" />
+        <option value="bundled-python-sdk-07523f343e4f-968fe969f28a-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-252.28539.27" />
       </set>
     </attachedChunks>
   </component>
@@ -193,6 +195,7 @@
       <updated>1770021763926</updated>
       <workItem from="1770021765001" duration="1657000" />
       <workItem from="1770623722436" duration="36629000" />
+      <workItem from="1773043422866" duration="3533000" />
     </task>
     <task id="LOCAL-00001" summary="changement 1">
       <option name="closed" value="true" />
@@ -218,7 +221,15 @@
       <option name="project" value="LOCAL" />
       <updated>1772979991420</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Merge + ajustement correction de bug du test unitaire de implicit graph">
+      <option name="closed" value="true" />
+      <created>1772989593171</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1772989593171</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -239,12 +250,14 @@
     <MESSAGE value="changement 1" />
     <MESSAGE value="Séance_3" />
     <MESSAGE value="TESTUNITAIRES" />
-    <option name="LAST_COMMIT_MESSAGE" value="TESTUNITAIRES" />
+    <MESSAGE value="Merge + ajustement correction de bug du test unitaire de implicit graph" />
+    <option name="LAST_COMMIT_MESSAGE" value="Merge + ajustement correction de bug du test unitaire de implicit graph" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/projet_programmation$graph.coverage" NAME="graph Coverage Results" MODIFIED="1772963505612" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/code" />
+    <SUITE FILE_PATH="coverage/projet_programmation$main.coverage" NAME="main Coverage Results" MODIFIED="1773044550987" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/code" />
+    <SUITE FILE_PATH="coverage/projet_programmation$graph.coverage" NAME="graph Coverage Results" MODIFIED="1773044548345" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/code" />
     <SUITE FILE_PATH="coverage/projet_programmation$network.coverage" NAME="network Coverage Results" MODIFIED="1770627953088" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/code" />
-    <SUITE FILE_PATH="coverage/projet_programmation$test_network_from_file_pytest.coverage" NAME="test_network_from_file_pytest Coverage Results" MODIFIED="1772966445767" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
-    <SUITE FILE_PATH="coverage/projet_programmation$.coverage" NAME=" Coverage Results" MODIFIED="1772989533983" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/projet_programmation$test_network_from_file_pytest.coverage" NAME="test_network_from_file_pytest Coverage Results" MODIFIED="1773042126256" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
+    <SUITE FILE_PATH="coverage/projet_programmation$.coverage" NAME=" Coverage Results" MODIFIED="1773042121696" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

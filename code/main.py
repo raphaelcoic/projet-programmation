@@ -20,3 +20,4 @@ print(G_extended.shortest_path(network_2.start, network_2.end))
 #Test graphe implicite
 G_implicit = network_2.build_implicit_graph()
 print(G_implicit.shortest_path(network_2.start, network_2.end))
+G_implicit.render_graph_with_path(network_2.start, network_2.end)
