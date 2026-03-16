@@ -13,7 +13,7 @@ class Graph:
     A minimal class for directed weighted graph represented as an adjacency list.
 
     Attributes: 
-    -----------
+    -----$------
     edges: dict
         A dictionary that contains the list of neighbors of each node along with their corresponding weights.
         Example: edges = {v0: [(v1, 21), (v2, 12)],
@@ -40,6 +40,7 @@ class Graph:
         """
         self._edges = edges
         self.distances = {}
+
 
     def neighbours(self, node):
         """
@@ -84,6 +85,18 @@ class Graph:
             - distance: The minimum distance from start to end. If no path exists, returns `math.inf`.
             - path: A list of nodes forming the shortest path. If no path exists, returns an empty list.
         """
+
+        def heuristic(self, v, fatigue):
+            if v == end:
+                return 0
+            else:
+                return min([d * f + heuristic(s, fatigue + f) for ((s,f), d) in self.neighbours(v)])
+
+
+
+
+
+
         # Check if start and end nodes are valid in the graph.
         if (start not in self._edges
                 or end not in {dest for neighbors in self._edges.values()
@@ -141,6 +154,7 @@ class Graph:
             if s == v and ((d > distance and f >= fatigue) or (d >= distance and f > fatigue)):
                 return True
         return False
+
 
 
 
