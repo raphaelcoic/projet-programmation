@@ -86,15 +86,6 @@ class Graph:
             - path: A list of nodes forming the shortest path. If no path exists, returns an empty list.
         """
 
-        def heuristic(self, v, fatigue):
-            if v == end:
-                return 0
-            else:
-                return min([d * f + heuristic(s, fatigue + f) for ((s,f), d) in self.neighbours(v)])
-
-
-
-
 
 
         # Check if start and end nodes are valid in the graph.
@@ -109,9 +100,9 @@ class Graph:
         visited = {}  # Tracks whether a node has been visited.
 
         while True:
-            # Find the unvisited node with the smallest distance.
+            # Find the unvisited node with the smallest estimated total cost (A*: g + h).
             current = min((node for node in self.distances.keys() if not visited.get(node, False)),
-                          key=lambda x: self.distances[x], default=None)
+                          key=lambda x: self.distances[x] + self.heuristic(x, end), default=None)
 
             # If no node can be reached or the smallest distance is infinity, terminate (no path exists).
             if current is None or self.distances[current] == math.inf:
@@ -132,6 +123,7 @@ class Graph:
                         if distance < self.distances.get(dest, math.inf):
                             self.distances[dest] = distance
                             predecessors[dest] = current
+
 
         # Reconstruct the shortest path from end to start using the predecessors dictionary.
         path = []
@@ -155,8 +147,52 @@ class Graph:
                 return True
         return False
 
+    def heuristic(self, node, end):
+        """
+        Minoration du coût restant de node jusqu'à end.
 
+        Dijkstra sur self._edges (graphe simplifié, longueurs seulement) en
+        partant de la fatigue du nœud courant et en l'incrémentant de 1 à
+        chaque arête.  Comme la vraie fatigue croît d'au moins 1 par arête,
+        cela fournit une minoration admissible (heuristique de type A*).
+        """
+        if node == end:
+            return 0
 
+        if isinstance(node, tuple):
+            v, f = node
+        else:
+            v, f = node, 1
+
+        if v not in self._edges:
+            return 0
+
+        heur_dist = {(v, f): 0}
+        heur_visited = set()
+
+        while True:
+            current = min(
+                (s for s in heur_dist if s not in heur_visited),
+                key=lambda s: heur_dist[s],
+                default=None
+            )
+
+            if current is None or heur_dist[current] == math.inf:
+                return math.inf
+
+            if current == end:
+                return heur_dist[current]
+
+            heur_visited.add(current)
+
+            curr_v, curr_f = current if isinstance(current, tuple) else (current, f)
+
+            for dest, length in self._edges.get(curr_v, []):
+                cost = length * curr_f
+                new_state = end if dest == end else (dest, curr_f + 1)
+                new_dist = heur_dist[current] + cost
+                if new_dist < heur_dist.get(new_state, math.inf):
+                    heur_dist[new_state] = new_dist
 
 
     def render_graph_with_path(self, start, end, output_file="graph"):

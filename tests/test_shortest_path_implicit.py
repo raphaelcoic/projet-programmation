@@ -41,7 +41,7 @@ class Test_ShortestPath_Implicit(unittest.TestCase):
                     continue
                 filename, distance = line.split()
 
-                if filename != "medium-largefatigue.txt":  ### Ici on teste avec un fichier à la fois pour que cela prenne moins de temps
+                if filename != "medium-smallfatigue.txt":  ### Ici on teste avec un fichier à la fois pour que cela prenne moins de temps
                     continue  ### On peut enlever ces deux lignes pour tester tout le fichiers en même temps
                 print(f"Testing graph: {filename}")  # Print the graph name being tested
                 self.assert_shortest_path_distance(filename, int(distance))
