@@ -6,6 +6,7 @@ import graphviz
 
 from networkx.algorithms.shortest_paths.generic import \
     shortest_path  # Importing NetworkX's shortest path algorithm, though it's not used here.
+from pip._internal.commands import index
 
 
 class Graph:
@@ -40,6 +41,7 @@ class Graph:
         """
         self._edges = edges
         self.distances = {}
+        self.predecessors = {}  # Tracks the previous node in the shortest path.
 
 
     def neighbours(self, node):
@@ -62,7 +64,7 @@ class Graph:
         return self._edges[node]
 
 
-    def shortest_path(self, start, end):
+    def shortest_path(self, start, end, initial_distance = 0):
         """
         Finds the shortest path between start and end nodes using Dijkstra's algorithm.
 
@@ -94,9 +96,8 @@ class Graph:
                                for dest, _ in neighbors}):
             return math.inf, []
 
-        # Initialize distances, predecessors, and visited status for all nodes.
-        self.distances[(start, 1)] = 0  # Distance to the starting node is 0.
-        predecessors = {}  # Tracks the previous node in the shortest path.
+        # Initialize distances, and visited status for all nodes.
+        self.distances[(start, 1)] = initial_distance  # Distance to the starting node is 0.
         visited = {}  # Tracks whether a node has been visited.
 
         while True:
@@ -109,7 +110,7 @@ class Graph:
                 return math.inf, []
 
             # If the current node is the destination, terminate.
-            if current == end:
+            if current[0] == end:
                 break
 
             visited[current] = True  # Mark the current node as visited.
@@ -122,22 +123,28 @@ class Graph:
                         # Check if this path offers a shorter distance.
                         if distance < self.distances.get(dest, math.inf):
                             self.distances[dest] = distance
-                            predecessors[dest] = current
+                            self.predecessors[dest] = current
 
 
         # Reconstruct the shortest path from end to start using the predecessors dictionary.
+        ends = [(v, f) for v, f in self.distances.keys() if v == end]
+        end1 = min((node for node in ends), key=lambda x: self.distances[x])
+        path = self._path(end1)
+
+        return self.distances[end1], path, ends
+
+
+    def _path(self, v):
         path = []
-        current = end
+        current = v
         while current is not None:
             if type(current) is tuple:
                 path.append(current[0])
             else:
                 path.append(current)
-            current = predecessors.get(current, None)
-        path.reverse()  # Reverse the path to get it from start to end.
-
-        return self.distances[end], path
-
+            current = self.predecessors.get(current, None)
+        path.reverse()
+        return path
 
     def _is_pareto_dominated(self, node):
         v, fatigue = node
@@ -193,6 +200,42 @@ class Graph:
                 new_dist = heur_dist[current] + cost
                 if new_dist < heur_dist.get(new_state, math.inf):
                     heur_dist[new_state] = new_dist
+
+
+    def _ends_pruning(self, ends):
+        return [end for end in ends if not self._is_pareto_dominated(end)]
+
+    def shortest_path_multiple_missions(self, start, end, checkpoints):
+
+        checkpoints.append(end)
+        n = len(checkpoints)
+        ends = shortest_path(start, checkpoints[0])[2]
+        ends = self._ends_pruning(ends)
+
+        for i in range(n-1):
+            ends_i = []
+            for j in range(len(ends)):
+                end_j = ends[j]
+                ends_i += shortest_path(end_j, checkpoints[i], initial_distance=self.distances[end_j])[2]
+            ends = self._ends_pruning(ends_i)
+
+        end = min(ends, key=lambda x: self.distances[x])
+        return self.distances[end], self._path(end)
+
+
+    def best_missions_order(self, start, missions : list[tuple]):
+        
+        n = len(missions)
+        ordered_missions = []
+        current = start
+        for i in range(n):
+            mission_i = min(missions, key=lambda x: self.shortest_path(current, x[0])[0])
+            missions.pop(missions.index(mission_i))
+            ordered_missions.append(mission_i)
+            current = mission_i[1]
+        
+        return ordered_missions
+
 
 
     def render_graph_with_path(self, start, end, output_file="graph"):
