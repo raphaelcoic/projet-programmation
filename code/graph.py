@@ -42,6 +42,7 @@ class Graph:
         self._edges = edges
         self.distances = {}
         self.predecessors = {}  # Tracks the previous node in the shortest path.
+        self._estimated_distances = {}
 
 
     def neighbours(self, node):
@@ -59,9 +60,18 @@ class Graph:
             A list of tuples, where each tuple consists of a neighbor and the weight to that neighbor.
             If the node does not exist in the graph, an empty list is returned.
         """
-        if node not in self._edges:
+        if isinstance(node, tuple):
+            v, f = node
+        else:
+            v = node
+            f = 1
+
+        if v not in self._edges:
             return []
-        return self._edges[node]
+        return [
+            ((dest, 1), weight) if not isinstance(dest, tuple) else (dest, weight)
+            for dest, weight in self._edges[v]
+        ]
 
 
     def shortest_path(self, start, end, initial_distance = 0):
@@ -89,7 +99,6 @@ class Graph:
         """
 
 
-
         # Check if start and end nodes are valid in the graph.
         if (start not in self._edges
                 or end not in {dest for neighbors in self._edges.values()
@@ -97,14 +106,15 @@ class Graph:
             return math.inf, []
 
         # Initialize distances, and visited status for all nodes.
-        self.distances[(start, 1)] = initial_distance  # Distance to the starting node is 0.
+        self.distances[(start, 1)] = initial_distance  # Distance to the starting node
         visited = {}  # Tracks whether a node has been visited.
+
+        c=0
 
         while True:
             # Find the unvisited node with the smallest estimated total cost (A*: g + h).
             current = min((node for node in self.distances.keys() if not visited.get(node, False)),
                           key=lambda x: self.distances[x] + self.heuristic(x, end), default=None)
-
             # If no node can be reached or the smallest distance is infinity, terminate (no path exists).
             if current is None or self.distances[current] == math.inf:
                 return math.inf, []
@@ -112,9 +122,9 @@ class Graph:
             # If the current node is the destination, terminate.
             if current[0] == end:
                 break
-
+            c+=1
+            print(c)
             visited[current] = True  # Mark the current node as visited.
-
             if not self._is_pareto_dominated(current):
                 # Update distances and predecessors for each neighbor of the current node.
                 for dest, length in self.neighbours(current):
@@ -130,7 +140,7 @@ class Graph:
         ends = [(v, f) for v, f in self.distances.keys() if v == end]
         end1 = min((node for node in ends), key=lambda x: self.distances[x])
         path = self._path(end1)
-
+        print(c)
         return self.distances[end1], path, ends
 
 
@@ -147,59 +157,54 @@ class Graph:
         return path
 
     def _is_pareto_dominated(self, node):
-        v, fatigue = node
+
+        if isinstance(node, tuple):
+            v, fatigue = node
+        else:
+            v, fatigue = node, 1
+
         distance = self.distances[(v, fatigue)]
         for (s, f), d in self.distances.items():
-            if s == v and ((d > distance and f >= fatigue) or (d >= distance and f > fatigue)):
+            if s == v and ((d < distance and f <= fatigue) or (d <= distance and f < fatigue)):
                 return True
         return False
 
-    def heuristic(self, node, end):
-        """
-        Minoration du coût restant de node jusqu'à end.
+    def _compute_estimated_distances(self, end):
+        if end in self._estimated_distances:
+            return
 
-        Dijkstra sur self._edges (graphe simplifié, longueurs seulement) en
-        partant de la fatigue du nœud courant et en l'incrémentant de 1 à
-        chaque arête.  Comme la vraie fatigue croît d'au moins 1 par arête,
-        cela fournit une minoration admissible (heuristique de type A*).
-        """
-        if node == end:
-            return 0
+        reversed_edges = {}
+        for src, neighbors in self._edges.items():
+            for dest, weight in neighbors:
+                dest_v = dest[0] if isinstance(dest, tuple) else dest
+                reversed_edges.setdefault(dest_v, []).append((src, weight))
 
-        if isinstance(node, tuple):
-            v, f = node
-        else:
-            v, f = node, 1
-
-        if v not in self._edges:
-            return 0
-
-        heur_dist = {(v, f): 0}
-        heur_visited = set()
+        dist = {end: 0}
+        visited = {}
 
         while True:
             current = min(
-                (s for s in heur_dist if s not in heur_visited),
-                key=lambda s: heur_dist[s],
+                (n for n in dist if not visited.get(n, False)),
+                key=lambda n: dist[n],
                 default=None
             )
+            if current is None:
+                break
+            visited[current] = True
+            for neighbor, weight in reversed_edges.get(current, []):
+                new_dist = dist[current] + weight
+                if new_dist < dist.get(neighbor, math.inf):
+                    dist[neighbor] = new_dist
 
-            if current is None or heur_dist[current] == math.inf:
-                return math.inf
+        self._estimated_distances[end] = dist
 
-            if current == end:
-                return heur_dist[current]
+    def heuristic(self, node, end):
 
-            heur_visited.add(current)
-
-            curr_v, curr_f = current if isinstance(current, tuple) else (current, f)
-
-            for dest, length in self._edges.get(curr_v, []):
-                cost = length * curr_f
-                new_state = end if dest == end else (dest, curr_f + 1)
-                new_dist = heur_dist[current] + cost
-                if new_dist < heur_dist.get(new_state, math.inf):
-                    heur_dist[new_state] = new_dist
+        v, f = node if isinstance(node, tuple) else (node, 1)
+        if v == end:
+            return 0
+        self._compute_estimated_distances(end)
+        return self._estimated_distances[end].get(v, math.inf) * f
 
 
     def _ends_pruning(self, ends):
@@ -242,7 +247,7 @@ class Graph:
         """
         Graphviz parfait : layout pro, chemin highlighté, HD.
         """
-        distance, path = self.shortest_path(start, end)
+        distance, path, _ = self.shortest_path(start, end)
 
         if not path:
             print("❌ Pas de chemin trouvé")

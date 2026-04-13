@@ -118,5 +118,5 @@ class Network:
                 neighbours.append(((dest,current_fatigue + fatigue), length * current_fatigue))
 
             return neighbours
-
+        print('Implicit graph created.')
         return GraphImplicit(edges, fonction_neighbours)

@@ -23,13 +23,11 @@ def load_expected_distances():
     return expected
 
 
-
-
 class Test_ShortestPath_Implicit(unittest.TestCase):
     def assert_shortest_path_distance(self, filename, expected_distance):
         network = Network.from_file(NET_DIR / filename)
         graph = network.build_implicit_graph()
-        actual, _ = graph.shortest_path(network.start, network.end)
+        actual, _, _ = graph.shortest_path(network.start, network.end)
         self.assertEqual(actual, expected_distance)
 
     def test_shortest_path_expected_distances(self):
