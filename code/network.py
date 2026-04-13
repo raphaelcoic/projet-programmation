@@ -82,27 +82,22 @@ class Network:
         Graph
             Extended graph where nodes are (original_node, fatigue_level) pairs
         """
-        start_edges = []
-        for dest, length, fatigue in self._roads[self.start]:
-            next_fatigue = 1 + fatigue
-            if next_fatigue > max_fatigue:
-                continue
-            if dest != self.end:
-                start_edges.append(((dest, next_fatigue), length))
-            else:
-                start_edges.append((dest, length))
-        extended_roads = {self.start: start_edges, self.end: []}
+
+        edges = {}
+        for edge, neighbors in self._roads.items():
+            edges[edge] = [(dest, length) for dest, length, fatigue in neighbors]
+
+        extended_roads = {}
 
         for fatigue_level in range(1, max_fatigue):
             for node, neighbors in self._roads.items():
-                if node != self.start:
-                    extended_roads[(node, fatigue_level)] = [((dest, fatigue_level + fatigue), length * fatigue_level)
+                extended_roads[(node, fatigue_level)] = [((dest, fatigue_level + fatigue), length * fatigue_level)
                                                                  if dest != self.end
                                                                  else (dest, length * fatigue_level)
                                                                  for dest, length, fatigue in neighbors
                                                                  if fatigue_level + fatigue <= max_fatigue]
         print('Extended graph created.')
-        return Graph(extended_roads)
+        return GraphExtended(edges, extended_roads)
 
     def build_implicit_graph(self):
 

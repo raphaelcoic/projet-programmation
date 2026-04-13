@@ -4,12 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="62d3a3e4-cfb7-4dd1-b905-0107ebbebc3d" name="Changes" comment="Heuristique">
+    <list default="true" id="62d3a3e4-cfb7-4dd1-b905-0107ebbebc3d" name="Changes" comment="Correction de bugs">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/graph.py" beforeDir="false" afterPath="$PROJECT_DIR$/code/graph.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/code/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/network.py" beforeDir="false" afterPath="$PROJECT_DIR$/code/network.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_shortest_path_implicit.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_shortest_path_implicit.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_network_simple_graph.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_network_simple_graph.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -17,7 +17,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="25" />
+    <option name="cachedIndexableFilesCount" value="27" />
     <option name="fileBasedEmbeddingIndicesEnabled" value="true" />
   </component>
   <component name="Git.Settings">
@@ -53,44 +53,45 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Python tests.Python tests in test_network_from_file.py.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.Python tests in test_shortest_path.py.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.Python tests in test_shortest_path_extended.py.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.Python tests in test_shortest_path_implicit.py.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.pytest for tests.test_shortest_path_implicit.Test_ShortestPath_Implicit.test_shortest_path_expected_distances.executor&quot;: &quot;Run&quot;,
-    &quot;Python.graph.executor&quot;: &quot;Run&quot;,
-    &quot;Python.main.executor&quot;: &quot;Run&quot;,
-    &quot;Python.network.executor&quot;: &quot;Run&quot;,
-    &quot;Python.test_network_from_file_pytest.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
-    &quot;ai.playground.ignore.import.keys.banner.in.settings&quot;: &quot;true&quot;,
-    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
-    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/Raph/projet-programmation/code&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;run.code.analysis.last.selected.profile&quot;: &quot;aDefault&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;ml.llm.LLMConfigurable&quot;,
-    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Python tests.Python tests in test_network_from_file.py.executor": "Run",
+    "Python tests.Python tests in test_shortest_path.py.executor": "Run",
+    "Python tests.Python tests in test_shortest_path_extended.py.executor": "Run",
+    "Python tests.Python tests in test_shortest_path_implicit.py.executor": "Run",
+    "Python tests.pytest for tests.test_network_simple_graph.test_build_simple_graph_is_correct_and_robust.executor": "Run",
+    "Python tests.pytest for tests.test_shortest_path_implicit.Test_ShortestPath_Implicit.test_shortest_path_expected_distances.executor": "Run",
+    "Python.graph.executor": "Run",
+    "Python.main.executor": "Run",
+    "Python.network.executor": "Run",
+    "Python.test_network_from_file_pytest.executor": "Run",
+    "RunOnceActivity.MCP Project settings loaded": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "ai.playground.ignore.import.keys.banner.in.settings": "true",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
+    "git-widget-placeholder": "main",
+    "junie.onboarding.icon.badge.shown": "true",
+    "last_opened_file_path": "C:/Users/Raph/projet-programmation/code",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "run.code.analysis.last.selected.profile": "aDefault",
+    "settings.editor.selected.configurable": "ml.llm.LLMConfigurable",
+    "to.speed.mode.migration.done": "true",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\Raph\projet-programmation\code" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.test_network_from_file_pytest">
+  <component name="RunManager" selected="Python tests.pytest for tests.test_network_simple_graph.test_build_simple_graph_is_correct_and_robust">
     <configuration name="test_network_from_file_pytest" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="projet-programmation" />
       <option name="ENV_FILES" value="" />
@@ -114,24 +115,6 @@
       <option name="MODULE_MODE" value="false" />
       <option name="REDIRECT_INPUT" value="false" />
       <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="Python tests in test_network_from_file.py" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
-      <module name="projet-programmation" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="DEBUG_JUST_MY_CODE" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="RUN_TOOL" value="" />
-      <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;$PROJECT_DIR$/tests/test_network_from_file.py&quot;" />
-      <option name="_new_targetType" value="&quot;PATH&quot;" />
       <method v="2" />
     </configuration>
     <configuration name="Python tests in test_shortest_path_extended.py" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
@@ -170,6 +153,26 @@
       <option name="_new_targetType" value="&quot;PATH&quot;" />
       <method v="2" />
     </configuration>
+    <configuration name="pytest for tests.test_network_simple_graph.test_build_simple_graph_is_correct_and_robust" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
+      <module name="projet-programmation" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="DEBUG_JUST_MY_CODE" value="false" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="RUN_TOOL" value="" />
+      <option name="_new_keywords" value="&quot;&quot;" />
+      <option name="_new_parameters" value="&quot;&quot;" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;tests.test_network_simple_graph.test_build_simple_graph_is_correct_and_robust&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <method v="2" />
+    </configuration>
     <configuration name="pytest for tests.test_shortest_path_implicit.Test_ShortestPath_Implicit.test_shortest_path_expected_distances" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
       <module name="projet-programmation" />
       <option name="ENV_FILES" value="" />
@@ -192,11 +195,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python tests.pytest for tests.test_shortest_path_implicit.Test_ShortestPath_Implicit.test_shortest_path_expected_distances" />
+        <item itemvalue="Python tests.pytest for tests.test_network_simple_graph.test_build_simple_graph_is_correct_and_robust" />
         <item itemvalue="Python.test_network_from_file_pytest" />
+        <item itemvalue="Python tests.pytest for tests.test_shortest_path_implicit.Test_ShortestPath_Implicit.test_shortest_path_expected_distances" />
         <item itemvalue="Python tests.Python tests in test_shortest_path_implicit.py" />
         <item itemvalue="Python tests.Python tests in test_shortest_path_extended.py" />
-        <item itemvalue="Python tests.Python tests in test_network_from_file.py" />
       </list>
     </recent_temporary>
   </component>
@@ -222,6 +225,7 @@
       <workItem from="1775565701398" duration="529000" />
       <workItem from="1775566716219" duration="8825000" />
       <workItem from="1775806683924" duration="9585000" />
+      <workItem from="1776062833954" duration="3380000" />
     </task>
     <task id="LOCAL-00001" summary="changement 1">
       <option name="closed" value="true" />
@@ -263,7 +267,15 @@
       <option name="project" value="LOCAL" />
       <updated>1775568996487</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Correction de bugs">
+      <option name="closed" value="true" />
+      <created>1776062872906</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1776062872906</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -286,12 +298,14 @@
     <MESSAGE value="TESTUNITAIRES" />
     <MESSAGE value="Merge + ajustement correction de bug du test unitaire de implicit graph" />
     <MESSAGE value="Heuristique" />
-    <option name="LAST_COMMIT_MESSAGE" value="Heuristique" />
+    <MESSAGE value="Correction de bugs" />
+    <option name="LAST_COMMIT_MESSAGE" value="Correction de bugs" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/projet_programmation$test_network_from_file_pytest.coverage" NAME="test_network_from_file_pytest Coverage Results" MODIFIED="1775568278843" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
+    <SUITE FILE_PATH="coverage/projet_programmation$pytest_for_tests_test_network_simple_graph_test_build_simple_graph_is_correct_and_robust.coverage" NAME="pytest for tests.test_network_simple_graph.test_build_simple_graph_is_correct_and_robust Coverage Results" MODIFIED="1776066180622" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/projet_programmation$test_network_from_file_pytest.coverage" NAME="test_network_from_file_pytest Coverage Results" MODIFIED="1776062934381" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/projet_programmation$pytest_for_tests_test_shortest_path_implicit_Test_ShortestPath_Implicit_test_shortest_path_expected_distances.coverage" NAME="pytest for tests.test_shortest_path_implicit.Test_ShortestPath_Implicit.test_shortest_path_expected_distances Coverage Results" MODIFIED="1775807405207" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/projet_programmation$main.coverage" NAME="main Coverage Results" MODIFIED="1775862336780" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/code" />
+    <SUITE FILE_PATH="coverage/projet_programmation$main.coverage" NAME="main Coverage Results" MODIFIED="1776065768673" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/code" />
     <SUITE FILE_PATH="coverage/projet_programmation$.coverage" NAME=" Coverage Results" MODIFIED="1773043033743" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/projet_programmation$graph.coverage" NAME="graph Coverage Results" MODIFIED="1773043063446" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/code" />
     <SUITE FILE_PATH="coverage/projet_programmation$network.coverage" NAME="network Coverage Results" MODIFIED="1770627953088" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/code" />

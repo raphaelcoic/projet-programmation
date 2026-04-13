@@ -74,7 +74,7 @@ class Graph:
         ]
 
 
-    def shortest_path(self, start, end, initial_distance = 0):
+    def shortest_path(self, start, end, initial_distance = 0, initial_fatigue = 1):
         """
         Finds the shortest path between start and end nodes using Dijkstra's algorithm.
 
@@ -100,16 +100,35 @@ class Graph:
 
 
         # Check if start and end nodes are valid in the graph.
-        if (start not in self._edges
-                or end not in {dest for neighbors in self._edges.values()
-                               for dest, _ in neighbors}):
+        # Extract all source nodes (handling both tuple and non-tuple formats)
+        all_sources = set()
+        for node in self._edges.keys():
+            if isinstance(node, tuple):
+                all_sources.add(node[0])
+            else:
+                all_sources.add(node)
+
+        # Extract all destination nodes (handling both tuple and non-tuple formats)
+        all_destinations = set()
+        for neighbors in self._edges.values():
+            for dest, _ in neighbors:
+                if isinstance(dest, tuple):
+                    all_destinations.add(dest[0])
+                else:
+                    all_destinations.add(dest)
+
+        # Check if start and end nodes are valid
+        start_node = start[0] if isinstance(start, tuple) else start
+        end_node = end[0] if isinstance(end, tuple) else end
+
+        if start_node not in all_sources or end_node not in all_destinations:
             return math.inf, []
 
+
         # Initialize distances, and visited status for all nodes.
-        self.distances[(start, 1)] = initial_distance  # Distance to the starting node
+        self.distances[(start, initial_fatigue)] = initial_distance  # Distance to the starting node
         visited = {}  # Tracks whether a node has been visited.
 
-        c=0
 
         while True:
             # Find the unvisited node with the smallest estimated total cost (A*: g + h).
@@ -122,8 +141,7 @@ class Graph:
             # If the current node is the destination, terminate.
             if current[0] == end:
                 break
-            c+=1
-            print(c)
+
             visited[current] = True  # Mark the current node as visited.
             if not self._is_pareto_dominated(current):
                 # Update distances and predecessors for each neighbor of the current node.
@@ -140,7 +158,7 @@ class Graph:
         ends = [(v, f) for v, f in self.distances.keys() if v == end]
         end1 = min((node for node in ends), key=lambda x: self.distances[x])
         path = self._path(end1)
-        print(c)
+
         return self.distances[end1], path, ends
 
 
@@ -300,6 +318,40 @@ class Graph:
         dot.attr(engine='fdp')
         dot.render(output_file, format='svg', cleanup=True)
         print(f"🎨 {output_file}.png généré (layout pro !)")
+
+
+
+class GraphExtended(Graph):
+
+    def __init__(self, edges, extended_edges):
+        super().__init__(edges)
+        self._extended_edges = extended_edges
+
+        def neighbours(node):
+            """
+            Returns the list of neighbors for a given node.
+
+            Parameters:
+            -----------
+            node:
+                The node whose neighbors need to be fetched.
+
+            Returns:
+            --------
+            list
+                A list of tuples, where each tuple consists of a neighbor and the weight to that neighbor.
+                If the node does not exist in the graph, an empty list is returned.
+            """
+
+            if node not in self._extended_edges:
+                return []
+            return [
+                ((dest, 1), weight) if not isinstance(dest, tuple) else (dest, weight)
+                for dest, weight in self._extended_edges[node]
+            ]
+
+        self.neighbours = neighbours
+
 
 
 class GraphImplicit(Graph):
