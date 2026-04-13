@@ -92,8 +92,6 @@ class Network:
         for fatigue_level in range(1, max_fatigue):
             for node, neighbors in self._roads.items():
                 extended_roads[(node, fatigue_level)] = [((dest, fatigue_level + fatigue), length * fatigue_level)
-                                                                 if dest != self.end
-                                                                 else (dest, length * fatigue_level)
                                                                  for dest, length, fatigue in neighbors
                                                                  if fatigue_level + fatigue <= max_fatigue]
         print('Extended graph created.')

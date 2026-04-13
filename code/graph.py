@@ -74,7 +74,7 @@ class Graph:
         ]
 
 
-    def shortest_path(self, start, end, initial_distance = 0, initial_fatigue = 1):
+    def shortest_path(self, start, end, multiple_missions = False, initial_distance = 0):
         """
         Finds the shortest path between start and end nodes using Dijkstra's algorithm.
 
@@ -122,11 +122,16 @@ class Graph:
         end_node = end[0] if isinstance(end, tuple) else end
 
         if start_node not in all_sources or end_node not in all_destinations:
-            return math.inf, []
+            return math.inf, [], []
 
 
         # Initialize distances, and visited status for all nodes.
-        self.distances[(start, initial_fatigue)] = initial_distance  # Distance to the starting node
+
+        if isinstance(start, tuple):
+            self.distances = {start : initial_distance}
+        else:
+            self.distances = {(start, 1) : initial_distance}   # Distance to the starting node
+
         visited = {}  # Tracks whether a node has been visited.
 
 
@@ -136,13 +141,19 @@ class Graph:
                           key=lambda x: self.distances[x] + self.heuristic(x, end), default=None)
             # If no node can be reached or the smallest distance is infinity, terminate (no path exists).
             if current is None or self.distances[current] == math.inf:
-                return math.inf, []
+                break
+                return math.inf, [], []
+
+            visited[current] = True  # Mark the current node as visited.
 
             # If the current node is the destination, terminate.
             if current[0] == end:
-                break
+                if multiple_missions:
+                    continue
+                else:
+                    break
 
-            visited[current] = True  # Mark the current node as visited.
+
             if not self._is_pareto_dominated(current):
                 # Update distances and predecessors for each neighbor of the current node.
                 for dest, length in self.neighbours(current):
@@ -157,8 +168,10 @@ class Graph:
         # Reconstruct the shortest path from end to start using the predecessors dictionary.
         ends = [(v, f) for v, f in self.distances.keys() if v == end]
         end1 = min((node for node in ends), key=lambda x: self.distances[x])
-        path = self._path(end1)
-
+        if not multiple_missions:
+            path = self._path(end1)
+        else:
+            path = []
         return self.distances[end1], path, ends
 
 
@@ -225,39 +238,95 @@ class Graph:
         return self._estimated_distances[end].get(v, math.inf) * f
 
 
-    def _ends_pruning(self, ends):
-        return [end for end in ends if not self._is_pareto_dominated(end)]
+    def _ends_pruning(self, ends, distances):
 
-    def shortest_path_multiple_missions(self, start, end, checkpoints):
+        unique_ends = set(ends)
 
-        checkpoints.append(end)
-        n = len(checkpoints)
-        ends = shortest_path(start, checkpoints[0])[2]
-        ends = self._ends_pruning(ends)
+        ends_pruned = []
+        for end in unique_ends:
+            dominated = False
+            v, fatigue = end
+            distance = distances[end]
+            for (s, f), d in distances.items():
+                if (d < distance and f <= fatigue) or (d <= distance and f < fatigue):
+                    dominated = True
+
+            if not dominated:
+                ends_pruned.append(end)
+
+        return ends_pruned
+
+
+    def _get_ends_distances(self, ends):
+        return {end : self.distances.get(end, math.inf) for end in ends}
+
+    def shortest_path_multiple_missions(self, missions:list[tuple]):
+
+        start = missions[0][0]
+
+        targets = []
+        for (u,v) in missions:
+            if u !=start:
+                targets.append(u)
+            targets.append(v)
+
+        n = len(targets)
+        ends = self.shortest_path(start, targets[0], multiple_missions = True)[2]
+        ends_distances = self._get_ends_distances(ends)
+        ends = self._ends_pruning(ends, ends_distances)
+
 
         for i in range(n-1):
+            end_i = targets[i+1]
             ends_i = []
+            ends_distances_i = {}
+
             for j in range(len(ends)):
-                end_j = ends[j]
-                ends_i += shortest_path(end_j, checkpoints[i], initial_distance=self.distances[end_j])[2]
-            ends = self._ends_pruning(ends_i)
+                start_i_j = ends[j]
+                initial_distance = ends_distances[start_i_j]
+                ends_i_j = self.shortest_path(start_i_j, end_i, multiple_missions = True, initial_distance=initial_distance)[2]
+                ends_distances_i_j = self._get_ends_distances(ends_i_j)
+                ends_i.extend(ends_i_j)
+                ends_distances_i.update(ends_distances_i_j)
 
-        end = min(ends, key=lambda x: self.distances[x])
-        return self.distances[end], self._path(end)
+            ends = self._ends_pruning(ends_i, ends_distances_i)
+            ends_distances.update(ends_distances_i)
+
+        end = min(ends, key=lambda x: ends_distances[x])
+        return ends_distances[end], self._path(end)
 
 
-    def best_missions_order(self, start, missions : list[tuple]):
-        
+    def best_missions_order(self, missions: list[tuple]):
+        """
+        Teste TOUTES les permutations d'ordre des missions et retourne la meilleure.
+        Complexité: O(n! * n) - OK jusqu'à n=10.
+        """
+
+        from itertools import permutations
+
         n = len(missions)
-        ordered_missions = []
-        current = start
-        for i in range(n):
-            mission_i = min(missions, key=lambda x: self.shortest_path(current, x[0])[0])
-            missions.pop(missions.index(mission_i))
-            ordered_missions.append(mission_i)
-            current = mission_i[1]
-        
-        return ordered_missions
+        if n == 0:
+            return [], 0
+
+        best_order = None
+        best_dist = math.inf
+
+        # Test every possible order of missions
+        for perm in permutations(missions):  # perm = ((s1,e1), (s2,e2), ...)
+            total_dist = 0
+
+
+            for i in range(n - 1):
+                trans_dist = self.shortest_path(perm[i][1], perm[i + 1][0])[0]  # end_i → start_{i+1}
+                total_dist += trans_dist
+                if total_dist >= best_dist:
+                    break
+
+            if total_dist < best_dist:
+                best_dist = total_dist
+                best_order = perm
+
+        return list(best_order)
 
 
 
