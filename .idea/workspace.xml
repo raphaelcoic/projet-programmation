@@ -5,16 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="62d3a3e4-cfb7-4dd1-b905-0107ebbebc3d" name="Changes" comment="Correction de bugs">
-      <change afterPath="$PROJECT_DIR$/tests/test_extended_graph.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/test_graph_creation.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/test_implicit_graph.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/test_network_creation.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/test_simple_graph.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/test_multiple_missions.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/graph.py" beforeDir="false" afterPath="$PROJECT_DIR$/code/graph.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/code/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/code/network.py" beforeDir="false" afterPath="$PROJECT_DIR$/code/network.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_shortest_path_implicit.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -22,7 +17,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="29" />
+    <option name="cachedIndexableFilesCount" value="30" />
     <option name="fileBasedEmbeddingIndicesEnabled" value="true" />
   </component>
   <component name="Git.Settings">
@@ -69,6 +64,7 @@
     "Python tests.pytest in test_extended_graph.py.executor": "Run",
     "Python tests.pytest in test_graph_creation.py.executor": "Run",
     "Python tests.pytest in test_implicit_graph.py.executor": "Run",
+    "Python tests.pytest in test_multiple_missions.py.executor": "Run",
     "Python tests.pytest in test_network_creation.py.executor": "Run",
     "Python tests.pytest in test_shortest_path_implicit.py.executor": "Run",
     "Python tests.pytest in test_simple_graph.py.executor": "Run",
@@ -84,6 +80,7 @@
     "codeWithMe.voiceChat.enabledByDefault": "false",
     "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
     "git-widget-placeholder": "main",
+    "ignore.virus.scanning.warn.message": "true",
     "junie.onboarding.icon.badge.shown": "true",
     "last_opened_file_path": "C:/Users/Raph/projet-programmation/code",
     "node.js.detected.package.eslint": "true",
@@ -92,7 +89,7 @@
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
     "run.code.analysis.last.selected.profile": "aDefault",
-    "settings.editor.selected.configurable": "ml.llm.LLMConfigurable",
+    "settings.editor.selected.configurable": "settings.sync",
     "to.speed.mode.migration.done": "true",
     "vue.rearranger.settings.migration": "true"
   }
@@ -208,9 +205,9 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.test_network_from_file_pytest" />
         <item itemvalue="Python tests.pytest in test_simple_graph.py" />
         <item itemvalue="Python tests.pytest for tests.test_network_simple_graph.test_build_simple_graph_is_correct_and_robust" />
-        <item itemvalue="Python.test_network_from_file_pytest" />
         <item itemvalue="Python tests.pytest for tests.test_implicit_graph" />
         <item itemvalue="Python tests.Python tests in test_implicit_graph.py" />
       </list>
@@ -239,6 +236,9 @@
       <workItem from="1775566716219" duration="8825000" />
       <workItem from="1775806683924" duration="9585000" />
       <workItem from="1776062833954" duration="17160000" />
+      <workItem from="1776167288665" duration="3782000" />
+      <workItem from="1776171258360" duration="6448000" />
+      <workItem from="1776244830464" duration="5764000" />
     </task>
     <task id="LOCAL-00001" summary="changement 1">
       <option name="closed" value="true" />
@@ -325,14 +325,15 @@
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/projet_programmation$pytest_in_test_network_creation_py.coverage" NAME="pytest in test_network_creation.py Coverage Results" MODIFIED="1776070525326" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/projet_programmation$pytest_for_tests_test_network_simple_graph_test_build_simple_graph_is_correct_and_robust.coverage" NAME="pytest for tests.test_network_simple_graph.test_build_simple_graph_is_correct_and_robust Coverage Results" MODIFIED="1776066180622" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/projet_programmation$pytest_in_test_implicit_graph_py.coverage" NAME="pytest in test_implicit_graph.py Coverage Results" MODIFIED="1776074655935" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/projet_programmation$pytest_in_test_implicit_graph_py.coverage" NAME="pytest in test_implicit_graph.py Coverage Results" MODIFIED="1776169202263" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/projet_programmation$pytest_in_test_graph_creation_py.coverage" NAME="pytest in test_graph_creation.py Coverage Results" MODIFIED="1776070548648" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/projet_programmation$main.coverage" NAME="main Coverage Results" MODIFIED="1776082973660" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/code" />
-    <SUITE FILE_PATH="coverage/projet_programmation$graph.coverage" NAME="graph Coverage Results" MODIFIED="1776078919955" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/code" />
-    <SUITE FILE_PATH="coverage/projet_programmation$test_network_from_file_pytest.coverage" NAME="test_network_from_file_pytest Coverage Results" MODIFIED="1776062934381" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
+    <SUITE FILE_PATH="coverage/projet_programmation$main.coverage" NAME="main Coverage Results" MODIFIED="1776249457760" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/code" />
+    <SUITE FILE_PATH="coverage/projet_programmation$graph.coverage" NAME="graph Coverage Results" MODIFIED="1776246823691" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/code" />
     <SUITE FILE_PATH="coverage/projet_programmation$pytest_in_test_shortest_path_implicit_py.coverage" NAME="pytest in test_shortest_path_implicit.py Coverage Results" MODIFIED="1776070640328" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/projet_programmation$test_network_from_file_pytest.coverage" NAME="test_network_from_file_pytest Coverage Results" MODIFIED="1776173213827" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/projet_programmation$pytest_for_tests_test_shortest_path_implicit_Test_ShortestPath_Implicit_test_shortest_path_expected_distances.coverage" NAME="pytest for tests.test_shortest_path_implicit.Test_ShortestPath_Implicit.test_shortest_path_expected_distances Coverage Results" MODIFIED="1775807405207" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/projet_programmation$pytest_in_test_simple_graph_py.coverage" NAME="pytest in test_simple_graph.py Coverage Results" MODIFIED="1776075086791" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/projet_programmation$pytest_in_test_multiple_missions_py.coverage" NAME="pytest in test_multiple_missions.py Coverage Results" MODIFIED="1776250843352" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/projet_programmation$pytest_in_test_extended_graph_py.coverage" NAME="pytest in test_extended_graph.py Coverage Results" MODIFIED="1776074195493" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/projet_programmation$.coverage" NAME=" Coverage Results" MODIFIED="1773043033743" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/projet_programmation$network.coverage" NAME="network Coverage Results" MODIFIED="1770627953088" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/code" />

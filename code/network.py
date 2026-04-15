@@ -1,6 +1,7 @@
-from graph import *
+from graph import Graph, GraphExtended, GraphImplicit, MultipleMissionsGraph
 import sys
 from pathlib import Path
+
 ROOT = Path(__file__).parent.parent
 sys.path.append(str(ROOT / "code"))
 NET_DIR = ROOT / "examples"
@@ -8,108 +9,170 @@ NET_DIR = ROOT / "examples"
 
 class Network:
     """
-    Class for a network that represents the environment (with length and fatigue on roads). 
+    Road network with weighted, fatigue-inducing edges.
+
+    Each edge (u, v) carries a *length* and a *fatigue* cost. Traversing the
+    edge at current fatigue level f incurs a distance cost of length * f and
+    raises the fatigue to f + fatigue.
+
+    Attributes
+    ----------
+    _roads : dict
+        Adjacency list: _roads[u] = [(v, length, fatigue), ...]
+    start : str
+        Default source node (loaded from file).
+    end : str
+        Default destination node (loaded from file).
     """
 
     def __init__(self, roads={}, start=None, end=None):
         """
-        Initializes the network from a dictionary roads. 
-
-        Parameters: 
-        -----------
-        roads: dict
-            A dictionary of the roads as an adjacency list, that is 
-            roads[u] = list of (v, length, fatigue)
-            Ex: roads = {v0: [(v1, 21, 2), (v2, 12, 4)], 
-                        v1: [(v0, 74, 2), (v2, 32, 1)], 
-                        ...}
-        start, end: 
-            Start and end nodes added as attributes
+        Parameters
+        ----------
+        roads : dict
+            Adjacency list: roads[u] = [(v, length, fatigue), ...]
+        start : str, optional
+            Default source node.
+        end : str, optional
+            Default destination node.
         """
         self._roads = roads
         self.start = start
         self.end = end
 
-    def __str__(self): 
-        """
-        Prints the network as text.
-        """
-        output = f"A network with {len(self._roads)} nodes and the following adjacency list:\n"
-        return output+self._roads.__str__()
+    def __str__(self):
+        """Return a human-readable description of the network."""
+        header = f"Network with {len(self._roads)} nodes:\n"
+        return header + self._roads.__str__()
 
     @classmethod
     def from_file(cls, filename: str):
         """
-        Creates a Network from an environment file.
+        Load a Network from a text file.
 
-        File format: one edge per line (start end length fatigue).
+        File format (one edge per line after the header)::
+
+            <nb_edges> <start> <end>
+            <u> <v> <length> <fatigue>
+            ...
+
+        Parameters
+        ----------
+        filename : str or Path
+            Path to the network file.
+
+        Returns
+        -------
+        Network
         """
-        # Initialize adjacency list
         roads = {}
 
-        with open(filename, "r") as testcase:
-            nb, start, end = testcase.readline().strip().split()
+        with open(filename, "r") as f:
+            nb, start, end = f.readline().strip().split()
             for _ in range(int(nb)):
-                i, j, l, f = testcase.readline().strip().split()
-                l, f = int(l), int(f)
-                roads.setdefault(i, []).append((j, l, f))
+                i, j, l, fatigue = f.readline().strip().split()
+                l, fatigue = int(l), int(fatigue)
+                roads.setdefault(i, []).append((j, l, fatigue))
                 roads.setdefault(j, [])
 
         return cls(roads=roads, start=start, end=end)
 
-    def build_simple_graph(self): ### self est déja un network
+    def build_simple_graph(self):
         """
-        Builds an object of type Graph from the network, by ignoring the fatigue coefficient. 
-        """
-        edges = {}
-        for edge, neighbors in self._roads.items():
-            edges[edge] = [(dest, length) for dest, length, fatigue in neighbors]
+        Build a Graph that ignores fatigue (uses only edge lengths).
 
+        Useful as a baseline or when fatigue is not relevant.
+
+        Returns
+        -------
+        Graph
+        """
+        edges = {
+            node: [(dest, length) for dest, length, _ in neighbors]
+            for node, neighbors in self._roads.items()
+        }
         return Graph(edges)
 
     def build_extended_graph(self, max_fatigue=1000):
         """
-        Builds an extended graph from the network by considering fatigue levels.
-        Expands each node (except start and end) into nodes with different fatigue levels.
-        
-        Parameters:
-        -----------
-        max_fatigue: int
-            Maximum allowed fatigue level (default: 1000)
-            
-        Returns:
-        --------
-        Graph
-            Extended graph where nodes are (original_node, fatigue_level) pairs
-        """
+        Build a fatigue-expanded graph where each node is a (location, fatigue) pair.
 
-        edges = {}
-        for edge, neighbors in self._roads.items():
-            edges[edge] = [(dest, length) for dest, length, fatigue in neighbors]
+        Every combination of location and fatigue level up to *max_fatigue* is
+        pre-computed. Edge cost is length * fatigue_level and new fatigue is
+        fatigue_level + edge_fatigue.
+
+        Parameters
+        ----------
+        max_fatigue : int
+            Maximum fatigue level to expand (default: 1000).
+
+        Returns
+        -------
+        GraphExtended
+        """
+        plain_edges = {
+            node: [(dest, length) for dest, length, _ in neighbors]
+            for node, neighbors in self._roads.items()
+        }
 
         extended_roads = {}
-
         for fatigue_level in range(1, max_fatigue):
             for node, neighbors in self._roads.items():
-                extended_roads[(node, fatigue_level)] = [((dest, fatigue_level + fatigue), length * fatigue_level)
-                                                                 for dest, length, fatigue in neighbors
-                                                                 if fatigue_level + fatigue <= max_fatigue]
-        print('Extended graph created.')
-        return GraphExtended(edges, extended_roads)
+                extended_roads[(node, fatigue_level)] = [
+                    ((dest, fatigue_level + fatigue), length * fatigue_level)
+                    for dest, length, fatigue in neighbors
+                    if fatigue_level + fatigue <= max_fatigue
+                ]
+
+        return GraphExtended(plain_edges, extended_roads)
 
     def build_implicit_graph(self):
+        """
+        Build a GraphImplicit where fatigue-expanded neighbours are computed on the fly.
 
-        edges = {}
-        for edge, neighbors in self._roads.items():
-            edges[edge] = [(dest, length) for dest, length, fatigue in neighbors]
+        This avoids pre-expanding the full state space and is more memory-efficient
+        than build_extended_graph for large networks or high fatigue values.
 
-        def fonction_neighbours(node):
+        Returns
+        -------
+        GraphImplicit
+        """
+        plain_edges = {
+            node: [(dest, length) for dest, length, _ in neighbors]
+            for node, neighbors in self._roads.items()
+        }
 
+        def compute_neighbours(node):
             v, current_fatigue = node
-            neighbours = []
-            for dest, length, fatigue in self._roads[v]:
-                neighbours.append(((dest,current_fatigue + fatigue), length * current_fatigue))
+            return [
+                ((dest, current_fatigue + fatigue), length * current_fatigue)
+                for dest, length, fatigue in self._roads[v]
+            ]
 
-            return neighbours
-        print('Implicit graph created.')
-        return GraphImplicit(edges, fonction_neighbours)
+        return GraphImplicit(plain_edges, compute_neighbours)
+
+    def build_multi_missions_graph(self):
+        """
+        Build a MultipleMissionsGraph for multi-mission routing with fatigue.
+
+        Identical to build_implicit_graph but returns a MultipleMissionsGraph
+        instance, which exposes shortest_path_multiple_missions and
+        best_shortest_path_multiple_missions.
+
+        Returns
+        -------
+        MultipleMissionsGraph
+        """
+        plain_edges = {
+            node: [(dest, length) for dest, length, _ in neighbors]
+            for node, neighbors in self._roads.items()
+        }
+
+        def compute_neighbours(node):
+            v, current_fatigue = node
+            return [
+                ((dest, current_fatigue + fatigue), length * current_fatigue)
+                for dest, length, fatigue in self._roads[v]
+            ]
+
+        return MultipleMissionsGraph(plain_edges, compute_neighbours)
